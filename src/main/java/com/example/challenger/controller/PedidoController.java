@@ -14,8 +14,8 @@ public class PedidoController {
 
     private final PedidoService pedidoService;
 
-    public PedidoController(PedidoService pedidoServiceImp) {
-        this.pedidoService = pedidoServiceImp;
+    public PedidoController(PedidoService pedidoService) {
+        this.pedidoService = pedidoService;
     }
 
     @PostMapping("/processOrder")
