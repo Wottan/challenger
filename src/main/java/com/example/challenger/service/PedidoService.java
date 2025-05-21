@@ -18,7 +18,7 @@ public class PedidoService {
     private final Timer processingTimer;
 
     public PedidoService(MeterRegistry meterRegistry) {
-        this.processingTimer = meterRegistry.timer("order.processing.timer");
+        this.processingTimer = meterRegistry.timer("pedido.procesamiento.tiempo");
     }
 
     public Mono<String> procesarPedido(PedidoRequest pedidoRequest) {
@@ -32,8 +32,13 @@ public class PedidoService {
                     long end = System.currentTimeMillis();
 
                     processingTimer.record(end - start, java.util.concurrent.TimeUnit.MILLISECONDS);
+
                     System.out.printf("Pedido %s procesado en %d ms%n", pedidoRequest.orderId(), (end - start));
                 })
                 .thenReturn("Pedido procesado: " + pedidoRequest.orderId());
+    }
+
+    public Map<String, PedidoRequest> getProcessedOrders() {
+        return processedOrders;
     }
 }

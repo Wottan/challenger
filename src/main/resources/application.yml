@@ -1,21 +1,20 @@
 spring:
   application:
     name: challenger-api
-
   main:
     web-application-type: reactive  # Usar WebFlux (reactivo) en vez de servlet tradicional
-
-  server:
-    port: 8081
-
-  logging:
-    level:
-      root: INFO
-
   metrics:
     export:
       prometheus:
         enabled: true
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+
 management:
   endpoints:
     web:
