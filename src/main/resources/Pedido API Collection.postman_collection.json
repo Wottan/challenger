@@ -1,0 +1,132 @@
+{
+	"info": {
+		"_postman_id": "c7684847-6708-438c-8a1e-ba3655322cd0",
+		"name": "Pedido API Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5392234"
+	},
+	"item": [
+		{
+			"name": "Procesar Pedido",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"orderId\": \"ORD123456\",\n  \"orderAmount\": 150.3,\n  \"customerId\": \"CUST7890\",\n  \"orderItems\": [\n    {\n        \"description\":\"item1\",\n        \"price\":10.0\n    },\n        {\n        \"description\":\"item2\",\n        \"price\":20.0\n    },\n        {\n        \"description\":\"item3\",\n        \"price\":30.0\n    }\n  ]\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/processOrder",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"processOrder"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Prometheus",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/actuator/prometheus",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"actuator",
+						"prometheus"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Metrics/pedido_procesamiento_tiempo",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/actuator/metrics/pedido_procesamiento_tiempo",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"actuator",
+						"metrics",
+						"pedido_procesamiento_tiempo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Health",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"orderId\": \"ORD123456\",\n  \"customerAmount\": 150.75,\n  \"customerId\": \"CUST7890\",\n  \"orderItems\": [\"item1\", \"item2\", \"item3\"]\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/actuator/health",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"actuator",
+						"health"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}

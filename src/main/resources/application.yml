@@ -3,13 +3,13 @@ spring:
     name: challenger-api
   main:
     web-application-type: reactive  # Usar WebFlux (reactivo) en vez de servlet tradicional
-  metrics:
-    export:
-      prometheus:
-        enabled: true
 
 server:
   port: 8080
+
+reactor:
+  netty:
+    worker-count: 16  # Número de hilos del event loop (por defecto = núcleos disponibles)
 
 logging:
   level:
@@ -19,7 +19,14 @@ management:
   endpoints:
     web:
       exposure:
-        include: "prometheus,health,info"
+        include: 'prometheus,health,info,metrics,httptrace'
+  endpoint:
+    health:
+      show-details: always
   metrics:
     enable:
       all: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+
