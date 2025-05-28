@@ -1,7 +1,7 @@
 package com.example.challenger.exception;
 
 import com.example.challenger.controller.PedidoController;
-import com.example.challenger.model.PedidoRequest;
+import com.example.challenger.dto.PedidoRequest;
 import com.example.challenger.service.PedidoService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +24,9 @@ class PedidoValidationTest {
     private PedidoService pedidoService;
 
     @Test
-    public void testValidationErrorMessages() {
+    void testValidationErrorMessages() {
         // Datos inválidos
-        PedidoRequest invalidRequest = new PedidoRequest(null, 0.0, "", List.of());
+        PedidoRequest invalidRequest = new PedidoRequest("", 0.0, "", List.of());
         webTestClient.post()
                 .uri("/processOrder")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -37,8 +37,8 @@ class PedidoValidationTest {
                 .value(errors -> {
                     System.out.println(errors);
                     assertThat(errors)
-                            .containsEntry("orderId", "no debe ser nulo")
-                            .containsEntry("orderItems","no debe estar vacío");
+                            .containsEntry("orderId", "no debe estar vacío")
+                            .containsEntry("orderItems", "no debe estar vacío");
                 });
     }
 

@@ -1,9 +1,9 @@
 package com.example.challenger.controller;
 
-import com.example.challenger.model.PedidoRequest;
+import com.example.challenger.dto.PedidoRequest;
+import com.example.challenger.model.PedidoProcesado;
 import com.example.challenger.service.PedidoService;
 import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,9 +19,7 @@ public class PedidoController {
     }
 
     @PostMapping("/processOrder")
-    public Mono<ResponseEntity<String>> procesarPedido(@Valid @RequestBody Mono<PedidoRequest> pedidoRequest) {
-        return pedidoRequest
-                .flatMap(pedidoService::procesarPedido)
-                .map(ResponseEntity::ok);
+    public Mono<PedidoProcesado> procesarPedido(@Valid @RequestBody Mono<PedidoRequest> pedidoRequest) {
+        return pedidoRequest.flatMap(pedidoService::procesarPedido);
     }
 }

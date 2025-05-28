@@ -8,7 +8,6 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 
 @Configuration
 public class ValidationConfig implements WebFluxConfigurer {
-
     @Bean
     public Validator validator() {
         return new LocalValidatorFactoryBean();
