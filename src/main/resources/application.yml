@@ -2,7 +2,7 @@ spring:
   application:
     name: challenger-api
   main:
-    web-application-type: reactive  # Usar WebFlux (reactivo) en vez de servlet tradicional
+    web-application-type: reactive
 
 server:
   port: 8080
