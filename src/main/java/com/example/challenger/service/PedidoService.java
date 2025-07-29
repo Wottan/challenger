@@ -31,24 +31,17 @@ public class PedidoService {
 
         long start = System.currentTimeMillis();
 
-        return Mono.delay(Duration.ofMillis(ThreadLocalRandom.current().nextInt(100, 500)))
-                .flatMap(i -> {
-                    try {
-                        PedidoProcesado pedidoProcesado = simulacion(pedidoRequest);
-
-                        long end = System.currentTimeMillis();
-
-                        pedidoTiempo.record(end - start, java.util.concurrent.TimeUnit.MILLISECONDS);
-
-                        pedidoContador.increment();
-
-                        logger.info("Pedido [{}] procesado en {} ms", pedidoRequest.orderId(), (end - start));
-
-                        return Mono.just(pedidoProcesado);
-                    } catch (Exception e) {
-                        logger.error("Error procesando pedido [{}]: {}", pedidoRequest.orderId(), e.getMessage(), e);
-                        return Mono.error(new Exception("Error interno al procesar el pedido"));
-                    }
+        return validateOrder(pedidoRequest)
+                .flatMap(this::simulateBusinessLogic)
+                .doOnNext(pedidoProcesado -> {
+                    long end = System.currentTimeMillis();
+                    pedidoTiempo.record(end - start, java.util.concurrent.TimeUnit.MILLISECONDS);
+                    pedidoContador.increment();
+                    logger.info("Pedido [{}] procesado en {} ms", pedidoRequest.orderId(), (end - start));
+                })
+                .onErrorResume(ex -> {
+                    logger.error("Error procesando pedido [{}]: {}", pedidoRequest.orderId(), ex.getMessage(), ex);
+                    return Mono.error(ex);
                 });
     }
 
@@ -56,7 +49,8 @@ public class PedidoService {
         return pedidoRequest.orderAmount() + pedidoRequest.orderItems().stream().mapToDouble(OrderItem::price).sum();
     }
 
-    private PedidoProcesado simulacion(PedidoRequest pedidoRequest) {
+    private Mono<PedidoProcesado> simulateBusinessLogic(PedidoRequest pedidoRequest) {
+        int delay = ThreadLocalRandom.current().nextInt(100, 500);
         double total = calcularPrecio(pedidoRequest);
 
         PedidoProcesado pedidoProcesado = new PedidoProcesado(
@@ -65,7 +59,16 @@ public class PedidoService {
                 total);
 
         PedidoStorage.guardar(pedidoProcesado);
-        return pedidoProcesado;
+        return Mono.delay(Duration.ofMillis(delay)).thenReturn(pedidoProcesado);
+    }
+
+
+    private Mono<PedidoRequest> validateOrder(PedidoRequest order) {
+        if (order.orderAmount() == null || order.orderAmount() <= 0
+                || order.orderItems() == null || order.orderItems().isEmpty()) {
+            return Mono.error(new IllegalArgumentException("Invalid order: " + order.orderId()));
+        }
+        return Mono.just(order);
     }
 
 }
